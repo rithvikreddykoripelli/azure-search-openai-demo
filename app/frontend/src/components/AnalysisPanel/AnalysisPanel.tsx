@@ -90,13 +90,13 @@ export const AnalysisPanel = ({ answer, activeTab, activeCitation, citationHeigh
             >
                 <SupportingContent supportingContent={answer.choices[0].context.data_points} />
             </PivotItem>
-            <PivotItem
+            {/* <PivotItem
                 itemKey={AnalysisPanelTabs.CitationTab}
                 headerText="Citation"
                 headerButtonProps={isDisabledCitationTab ? pivotItemDisabledStyle : undefined}
             >
                 {renderFileViewer()}
-            </PivotItem>
+            </PivotItem> */}
         </Pivot>
     );
 };

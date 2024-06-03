@@ -17,32 +17,14 @@ class RetrieveThenReadApproach(Approach):
     (answer) with that prompt.
     """
 
-    system_chat_template = (
-        " You are an expert dental market analyst working for Dental Market Insights (DMI) a company " 
-        + "offering high quality and specialized market research and market intelligence services to dental organizations. "
-        + "At DMI we have collected all the updates regarding the dental market from 2023 and you have access to all the insights "
-        + "and news about market trends, reports and updates from dental companies regarding new product releases, financial performance and more."
-        + "Your role is to assist dental industry professionals to find relevant insights and information according to their questions. "
-        + "Always answer the questions based on the provided information and try to use as many different sources as possible. "
-        + "Your answers should have a professional and objective tone. "
-        + "Use 'you' to refer to the individual asking the questions even if they ask with 'I'. "
-        + "Answer the following question using only the data provided in the sources below. "
-        + "For tabular information return it as an html table. Do not return markdown format. "
-        + "Each source has a name followed by colon and the actual information, always include the source name for each fact you use in the response. "
-        + "If you cannot answer using the sources below, say you don't know. Use below example to answer"
-    )
+    system_chat_template = """You are an expert dental market analyst working for Dental Market Insights (DMI), a company offering high-quality and specialized market research and intelligence services to dental organizations. At DMI, we have collected all the updates regarding the dental market from 2023. You have access to comprehensive insights and news about market trends, reports, and updates from dental companies regarding new product releases, financial performance, and more.
+Your role is to assist dental industry professionals in finding relevant insights and information according to their questions. Always answer questions based on the provided information and try to use as many different sources as possible. Your answers should have a professional and objective tone. Use 'you' to refer to the individual asking the questions, even if they ask using 'I'.
+Answer the following questions using only the data provided in the sources below. For tabular information, return it as an HTML table. Do not use markdown format. Each source has a name followed by the actual information; always include the source name for each fact you use in the response. If you cannot answer using the sources below, state that you don't know.
+"""
 
     # shots/sample conversation
-    question = """
-'What is the deductible for the employee plan for a visit to Overlake in Bellevue?'
-
-Sources:
-info1.txt: deductibles depend on whether you are in-network or out-of-network. In-network deductibles are $500 for employee and $1000 for family. Out-of-network deductibles are $1000 for employee and $2000 for family.
-info2.pdf: Overlake is in-network for the employee plan.
-info3.pdf: Overlake is the name of the area that includes a park and ride near Bellevue.
-info4.pdf: In-network institutions include Overlake, Swedish and others in the region
-"""
-    answer = "In-network deductibles are $500 for employee and $1000 for family [info1.txt] and Overlake is in-network for the employee plan [info2.pdf][info4.pdf]."
+    question = """"""
+    answer = ""
 
     def __init__(
         self,
@@ -53,7 +35,8 @@ info4.pdf: In-network institutions include Overlake, Swedish and others in the r
         chatgpt_model: str,
         chatgpt_deployment: Optional[str],  # Not needed for non-Azure OpenAI
         embedding_model: str,
-        embedding_deployment: Optional[str],  # Not needed for non-Azure OpenAI or for retrieval_mode="text"
+        # Not needed for non-Azure OpenAI or for retrieval_mode="text"
+        embedding_deployment: Optional[str],
         embedding_dimensions: int,
         sourcepage_field: str,
         content_field: str,
@@ -84,14 +67,17 @@ info4.pdf: In-network institutions include Overlake, Swedish and others in the r
     ) -> Union[dict[str, Any], AsyncGenerator[dict[str, Any], None]]:
         q = messages[-1]["content"]
         if not isinstance(q, str):
-            raise ValueError("The most recent message content must be a string.")
+            raise ValueError(
+                "The most recent message content must be a string.")
         overrides = context.get("overrides", {})
         auth_claims = context.get("auth_claims", {})
         has_text = overrides.get("retrieval_mode") in ["text", "hybrid", None]
-        has_vector = overrides.get("retrieval_mode") in ["vectors", "hybrid", None]
+        has_vector = overrides.get("retrieval_mode") in [
+            "vectors", "hybrid", None]
         use_semantic_ranker = overrides.get("semantic_ranker") and has_text
 
-        use_semantic_captions = True if overrides.get("semantic_captions") and has_text else False
+        use_semantic_captions = True if overrides.get(
+            "semantic_captions") and has_text else False
         top = overrides.get("top", 3)
         minimum_search_score = overrides.get("minimum_search_score", 0.0)
         minimum_reranker_score = overrides.get("minimum_reranker_score", 0.0)
@@ -116,7 +102,8 @@ info4.pdf: In-network institutions include Overlake, Swedish and others in the r
         )
 
         # Process results
-        sources_content = self.get_sources_content(results, use_semantic_captions, use_image_citation=False)
+        sources_content = self.get_sources_content(
+            results, use_semantic_captions, use_image_citation=False)
 
         # Append user message
         content = "\n".join(sources_content)
@@ -125,8 +112,10 @@ info4.pdf: In-network institutions include Overlake, Swedish and others in the r
         response_token_limit = 1024
         updated_messages = build_messages(
             model=self.chatgpt_model,
-            system_prompt=overrides.get("prompt_template", self.system_chat_template),
-            few_shots=[{"role": "user", "content": self.question}, {"role": "assistant", "content": self.answer}],
+            system_prompt=overrides.get(
+                "prompt_template", self.system_chat_template),
+            few_shots=[{"role": "user", "content": self.question},
+                       {"role": "assistant", "content": self.answer}],
             new_user_content=user_content,
             max_tokens=self.chatgpt_token_limit - response_token_limit,
         )
@@ -165,7 +154,8 @@ info4.pdf: In-network institutions include Overlake, Swedish and others in the r
                     "Prompt to generate answer",
                     [str(message) for message in updated_messages],
                     (
-                        {"model": self.chatgpt_model, "deployment": self.chatgpt_deployment}
+                        {"model": self.chatgpt_model,
+                            "deployment": self.chatgpt_deployment}
                         if self.chatgpt_deployment
                         else {"model": self.chatgpt_model}
                     ),

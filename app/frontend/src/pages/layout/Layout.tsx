@@ -1,7 +1,7 @@
 import { Outlet, NavLink, Link } from "react-router-dom";
 
 import github from "../../assets/github.svg";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo2.png";
 
 import styles from "./Layout.module.css";
 

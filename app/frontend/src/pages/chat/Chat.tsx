@@ -33,11 +33,11 @@ import { GPT4VSettings } from "../../components/GPT4VSettings";
 const Chat = () => {
     const [isConfigPanelOpen, setIsConfigPanelOpen] = useState(false);
     const [promptTemplate, setPromptTemplate] = useState<string>("");
-    const [temperature, setTemperature] = useState<number>(0.3);
+    const [temperature, setTemperature] = useState<number>(0.7);
     const [minimumRerankerScore, setMinimumRerankerScore] = useState<number>(0);
     const [minimumSearchScore, setMinimumSearchScore] = useState<number>(0);
-    const [retrieveCount, setRetrieveCount] = useState<number>(3);
-    const [retrievalMode, setRetrievalMode] = useState<RetrievalMode>(RetrievalMode.Hybrid);
+    const [retrieveCount, setRetrieveCount] = useState<number>(25);
+    const [retrievalMode, setRetrievalMode] = useState<RetrievalMode>(RetrievalMode.Vectors);
     const [useSemanticRanker, setUseSemanticRanker] = useState<boolean>(true);
     const [shouldStream, setShouldStream] = useState<boolean>(true);
     const [useSemanticCaptions, setUseSemanticCaptions] = useState<boolean>(false);
@@ -310,7 +310,7 @@ const Chat = () => {
                                                 key={index}
                                                 answer={streamedAnswer[1]}
                                                 isSelected={false}
-                                                onCitationClicked={c => onShowCitation(c, index)}
+                                                onCitationClicked={c => onToggleTab(AnalysisPanelTabs.SupportingContentTab, index)}
                                                 onThoughtProcessClicked={() => onToggleTab(AnalysisPanelTabs.ThoughtProcessTab, index)}
                                                 onSupportingContentClicked={() => onToggleTab(AnalysisPanelTabs.SupportingContentTab, index)}
                                                 onFollowupQuestionClicked={q => makeApiRequest(q)}
@@ -329,7 +329,7 @@ const Chat = () => {
                                                 key={index}
                                                 answer={answer[1]}
                                                 isSelected={selectedAnswer === index && activeAnalysisPanelTab !== undefined}
-                                                onCitationClicked={c => onShowCitation(c, index)}
+                                                onCitationClicked={c => onToggleTab(AnalysisPanelTabs.SupportingContentTab, index)}
                                                 onThoughtProcessClicked={() => onToggleTab(AnalysisPanelTabs.ThoughtProcessTab, index)}
                                                 onSupportingContentClicked={() => onToggleTab(AnalysisPanelTabs.SupportingContentTab, index)}
                                                 onFollowupQuestionClicked={q => makeApiRequest(q)}

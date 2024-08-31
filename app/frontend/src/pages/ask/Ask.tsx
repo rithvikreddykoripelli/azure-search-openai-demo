@@ -4,7 +4,7 @@ import { Checkbox, Panel, DefaultButton, Spinner, Slider, TextField, SpinButton,
 import styles from "./Ask.module.css";
 import { SparkleFilled } from "@fluentui/react-icons";
 
-import { askApi, configApi, ChatAppResponse, ChatAppRequest, RetrievalMode, VectorFieldOptions, GPT4VInput } from "../../api";
+import { askApi, configApi, getSpeechApi, ChatAppResponse, ChatAppRequest, RetrievalMode, VectorFieldOptions, GPT4VInput } from "../../api";
 import { Answer, AnswerError } from "../../components/Answer";
 import { QuestionInput } from "../../components/QuestionInput";
 import { ExampleList } from "../../components/Example";
@@ -41,12 +41,15 @@ export function Component(): JSX.Element {
     const [showSemanticRankerOption, setShowSemanticRankerOption] = useState<boolean>(false);
     const [showVectorOption, setShowVectorOption] = useState<boolean>(false);
     const [showUserUpload, setShowUserUpload] = useState<boolean>(false);
+    const [showSpeechInput, setShowSpeechInput] = useState<boolean>(false);
+    const [showSpeechOutput, setShowSpeechOutput] = useState<boolean>(false);
 
     const lastQuestionRef = useRef<string>("");
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<unknown>();
     const [answer, setAnswer] = useState<ChatAppResponse>();
+    const [speechUrl, setSpeechUrl] = useState<string | null>(null);
 
     const [activeCitation, setActiveCitation] = useState<string>();
     const [activeAnalysisPanelTab, setActiveAnalysisPanelTab] = useState<AnalysisPanelTabs | undefined>(undefined);
@@ -63,12 +66,22 @@ export function Component(): JSX.Element {
                 setRetrievalMode(RetrievalMode.Text);
             }
             setShowUserUpload(config.showUserUpload);
+            setShowSpeechInput(config.showSpeechInput);
+            setShowSpeechOutput(config.showSpeechOutput);
         });
     };
 
     useEffect(() => {
         getConfig();
     }, []);
+
+    useEffect(() => {
+        if (answer && showSpeechOutput) {
+            getSpeechApi(answer.choices[0].message.content).then(speechUrl => {
+                setSpeechUrl(speechUrl);
+            });
+        }
+    }, [answer]);
 
     const makeApiRequest = async (question: string) => {
         lastQuestionRef.current = question;
@@ -113,6 +126,7 @@ export function Component(): JSX.Element {
             };
             const result = await askApi(request, token);
             setAnswer(result);
+            setSpeechUrl(null);
         } catch (e) {
             setError(e);
         } finally {
@@ -217,6 +231,7 @@ export function Component(): JSX.Element {
                         disabled={isLoading}
                         initQuestion={question}
                         onSend={question => makeApiRequest(question)}
+                        showSpeechInput={showSpeechInput}
                     />
                 </div>
             </div>
@@ -230,6 +245,8 @@ export function Component(): JSX.Element {
                             onCitationClicked={x => onToggleTab(AnalysisPanelTabs.SupportingContentTab)}
                             onThoughtProcessClicked={() => onToggleTab(AnalysisPanelTabs.ThoughtProcessTab)}
                             onSupportingContentClicked={() => onToggleTab(AnalysisPanelTabs.SupportingContentTab)}
+                            showSpeechOutput={showSpeechOutput}
+                            speechUrl={speechUrl}
                         />
                     </div>
                 )}

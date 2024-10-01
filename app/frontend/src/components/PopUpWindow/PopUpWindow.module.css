@@ -1,0 +1,27 @@
+.dialogSurface.dialogSurface {
+    padding: unset;
+}
+
+.dialogBody {
+    background-color: white;
+    padding: 20px;
+}
+
+.promptButton.promptButton {
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin: 10px 10px;
+    font-weight: 600;
+    background-color: #0f6cbd;
+    border: 1px solid #d1d1d1;
+    color: white;
+}
+
+.promptButton.promptButton:hover {
+    background-color: #0f6cbd;
+    color: white;
+}
+
+.dialogTitle.dialogTitle {
+    font-weight: 800;
+}

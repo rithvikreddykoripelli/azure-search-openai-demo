@@ -5,11 +5,13 @@ import { initializeIcons } from "@fluentui/react";
 import { MsalProvider } from "@azure/msal-react";
 import { PublicClientApplication, EventType, AccountInfo } from "@azure/msal-browser";
 import { msalConfig, useLogin } from "./authConfig";
+// import { FluentProvider, webLightTheme } from "@fluentui/react-components";
 
 import "./index.css";
 
 import Layout from "./pages/layout/Layout";
 import Chat from "./pages/chat/Chat";
+import Landing from "./pages/landing/Landing";
 
 var layout;
 if (useLogin) {
@@ -43,6 +45,11 @@ initializeIcons();
 const router = createHashRouter([
     {
         path: "/",
+        element: <Landing />,
+        children: []
+    },
+    {
+        path: "/dental-gpt",
         element: layout,
         children: [
             {
@@ -63,6 +70,8 @@ const router = createHashRouter([
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
+        {/* <FluentProvider theme={webLightTheme}> */}
         <RouterProvider router={router} />
+        {/* </FluentProvider> */}
     </React.StrictMode>
 );

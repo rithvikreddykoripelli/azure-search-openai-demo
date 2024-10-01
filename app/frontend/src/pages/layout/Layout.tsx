@@ -1,4 +1,5 @@
 import { Outlet, NavLink, Link } from "react-router-dom";
+import { useState } from "react";
 
 import github from "../../assets/github.svg";
 import logo from "../../assets/logo2.png";
@@ -8,8 +9,11 @@ import styles from "./Layout.module.css";
 import { useLogin } from "../../authConfig";
 
 import { LoginButton } from "../../components/LoginButton";
+import { PopUpWindow } from "../../components/PopUpWindow";
 
 const Layout = () => {
+    const [open, setOpen] = useState(true);
+
     return (
         <div className={styles.layout}>
             <header className={styles.header} role={"banner"}>
@@ -37,6 +41,7 @@ const Layout = () => {
             </header>
 
             <Outlet />
+            <PopUpWindow open={open} setOpen={setOpen} />
         </div>
     );
 };

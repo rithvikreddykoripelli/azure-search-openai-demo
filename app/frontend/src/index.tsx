@@ -12,6 +12,7 @@ import "./index.css";
 import Layout from "./pages/layout/Layout";
 import Chat from "./pages/chat/Chat";
 import Landing from "./pages/landing/Landing";
+import DentalCompass from "./pages/dentalcompass/DentalCompass";
 
 var layout;
 if (useLogin) {
@@ -65,6 +66,10 @@ const router = createHashRouter([
                 lazy: () => import("./pages/NoPage")
             }
         ]
+    },
+    {
+        path: "/dental-compass",
+        element: <DentalCompass />
     }
 ]);
 

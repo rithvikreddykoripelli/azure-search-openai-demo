@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { Checkbox, Panel, DefaultButton, TextField, SpinButton, Slider } from "@fluentui/react";
 import { SparkleFilled } from "@fluentui/react-icons";
 import readNDJSONStream from "ndjson-readablestream";
+import { PopUpWindow } from "../../components/PopUpWindow";
 
 import styles from "./Chat.module.css";
 
@@ -36,7 +37,7 @@ const Chat = () => {
     const [temperature, setTemperature] = useState<number>(0.7);
     const [minimumRerankerScore, setMinimumRerankerScore] = useState<number>(0);
     const [minimumSearchScore, setMinimumSearchScore] = useState<number>(0);
-    const [retrieveCount, setRetrieveCount] = useState<number>(25);
+    const [retrieveCount, setRetrieveCount] = useState<number>(12);
     const [retrievalMode, setRetrievalMode] = useState<RetrievalMode>(RetrievalMode.Vectors);
     const [useSemanticRanker, setUseSemanticRanker] = useState<boolean>(true);
     const [shouldStream, setShouldStream] = useState<boolean>(true);
@@ -503,6 +504,7 @@ const Chat = () => {
                     {useLogin && <TokenClaimsDisplay />}
                 </Panel>
             </div>
+            <PopUpWindow />
         </div>
     );
 };

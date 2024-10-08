@@ -46,8 +46,17 @@ initializeIcons();
 const router = createHashRouter([
     {
         path: "/",
-        element: <Landing />,
-        children: []
+        element: layout,
+        children: [
+            {
+                index: true,
+                element: <Landing />
+            },
+            {
+                path: "/dental-compass",
+                element: <DentalCompass />
+            }
+        ]
     },
     {
         path: "/dental-gpt",
@@ -66,10 +75,6 @@ const router = createHashRouter([
                 lazy: () => import("./pages/NoPage")
             }
         ]
-    },
-    {
-        path: "/dental-compass",
-        element: <DentalCompass />
     }
 ]);
 

@@ -35,7 +35,9 @@ export const LoginButton = () => {
             appServicesLogout();
         }
     };
-    const logoutText = `Logout\n${activeAccount?.username ?? appServicesToken?.user_claims?.preferred_username}`;
+    const logoutText = `Logout`;
+    // \n${activeAccount?.username ?? appServicesToken?.user_claims?.preferred_username}`;
+
     return (
         <DefaultButton
             text={isLoggedIn ? logoutText : "Login"}
